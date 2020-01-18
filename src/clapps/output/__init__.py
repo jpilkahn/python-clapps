@@ -23,10 +23,12 @@ from sys import (
 from time import gmtime
 
 from clapps.output.LogLevel import LogLevel
+from clapps.output.OutputClass import OutputClass
 
 
 __all__ = [
     "LogLevel"
+    "OutputClass"
 ]
 
 
