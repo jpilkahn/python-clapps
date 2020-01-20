@@ -68,10 +68,34 @@ def mockIo():
 class TestLoggingMethods(TestCase):
     expectedLogLevelThresholdOutErr = LogLevel.Warning
 
-    def test_loggingMethods(self):
+    def test_isSilent(self):
+        self.__iterLoggingMethods(self.__test_isSilent)
+
+    def test_Output(self):
+        self.__iterLoggingMethods(self.__test_Output)
+
+    def assertMessageIn(self, message, mockStream):
+        output = mockStream.stream.getvalue()
+        self.assertIn(
+            message,
+            output,
+            msg=(
+                "Expected message not found in output on "
+                f"{mockStream.name}."
+            )
+        )
+
+    def assertNoOutput(self, mockStream):
+        self.assertEqual(
+            mockStream.stream.getvalue(),
+            "",
+            msg=f"Unepected output on {mockStream.name}."
+        )
+
+    def __iterLoggingMethods(self, test):
         for methodLogLevel in LogLevel:
+            # `NotSet` has no corresponding method.
             if methodLogLevel is LogLevel.NotSet:
-                # `NotSet` has no corresponding method.
                 continue
 
             for appLogLevel in LogLevel:
@@ -81,13 +105,13 @@ class TestLoggingMethods(TestCase):
                     method=f"OutputClass.{methodName}",
                     logLevel=appLogLevel.name
                 ):
-                    self.__test_LoggingMethod(
+                    test(
                         methodName,
                         methodLogLevel,
                         appLogLevel
                     )
 
-    def __test_LoggingMethod(
+    def __test_Output(
         self,
         methodName,
         methodLogLevel,
@@ -101,37 +125,57 @@ class TestLoggingMethods(TestCase):
 
         message = str(uuid4())
 
-        def assertMessage(mockStream):
-            output = mockStream.stream.getvalue()
-            self.assertIn(
-                message,
-                output,
-                msg=(
-                    "Expected message not found in output on "
-                    f"{mockStream.name}."
-                )
-            )
-
-        def assertNoOutput(mockStream):
-            self.assertEqual(
-                mockStream.stream.getvalue(),
-                "",
-                msg=f"Unepected output on {mockStream.name}."
-            )
-
         with mockIo() as io:
             method(message)
 
             if methodLogLevel < appLogLevel:
-                assertNoOutput(io.stderr)
-                assertNoOutput(io.stdout)
+                self.assertNoOutput(io.stderr)
+                self.assertNoOutput(io.stdout)
             else:
                 if methodLogLevel < self.expectedLogLevelThresholdOutErr:
-                    assertMessage(io.stdout)
-                    assertNoOutput(io.stderr)
+                    self.assertMessageIn(message, io.stdout)
+                    self.assertNoOutput(io.stderr)
                 else:
-                    assertMessage(io.stderr)
-                    assertNoOutput(io.stdout)
+                    self.assertMessageIn(message, io.stderr)
+                    self.assertNoOutput(io.stdout)
+
+    def __test_isSilent(
+        self,
+        methodName,
+        methodLogLevel,
+        appLogLevel
+    ):
+        outputClass = OutputClass(
+            isSilent=True,
+            logLevel=appLogLevel
+        )
+        method = getattr(
+            outputClass,
+            methodName
+        )
+
+        message = str(uuid4())
+
+        with mockIo() as io:
+            method(message)
+
+            self.assertNoOutput(io.stderr)
+            self.assertNoOutput(io.stdout)
+
+
+class TestOutFile(TestCase):
+    # TODO
+    pass
+
+
+class TestResultOutput(TestCase):
+    # TODO
+    pass
+
+
+class TestSilent(TestCase):
+    # TODO
+    pass
 
 
 if __name__ == '__main__':
