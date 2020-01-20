@@ -9,12 +9,6 @@ from logging import (
     Formatter,
     getLogger,
     StreamHandler,
-    NOTSET,
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR,
-    CRITICAL,
 )
 from sys import (
     stderr,
@@ -27,8 +21,8 @@ from clapps.output.OutputClass import OutputClass
 
 
 __all__ = [
-    "LogLevel"
-    "OutputClass"
+    "LogLevel",
+    "OutputClass",
 ]
 
 
@@ -82,16 +76,16 @@ rootLogger = getLogger()
 # - Let individual handlers filter on the basis of level, depending on
 #   (a) their responsibility and (b) the currently set cmdline args.
 # - Adjust on using class' initialization.
-rootLogger.setLevel(NOTSET)
+rootLogger.setLevel(LogLevel.NotSet)
 
-# Let `WARNING` (numeric value 30) be the threshold between stdout & stderr.
-logLevelThresholdOutErr = WARNING
+# Let `Warning` (numeric value 30) be the threshold between stdout & stderr.
+logLevelThresholdOutErr = LogLevel.Warning
 
 stderrHandler = StreamHandler(stderr)
 stdoutHandler = StreamHandler(stdout)
 
 stderrHandler.setLevel(logLevelThresholdOutErr)
-stdoutHandler.setLevel(NOTSET)
+stdoutHandler.setLevel(LogLevel.NotSet)
 stdoutHandler.addFilter(
     lambda record: 1 if record.levelno < logLevelThresholdOutErr else 0
 )

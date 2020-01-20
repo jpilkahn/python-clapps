@@ -10,7 +10,7 @@ The Python standard library's [`logging`][logging] module's default
            "logging module documentation"
 """
 
-from enum import Enum
+from enum import IntEnum
 from logging import (
     NOTSET,
     DEBUG,
@@ -21,7 +21,7 @@ from logging import (
 )
 
 
-class LogLevel(Enum):
+class LogLevel(IntEnum):
     NotSet = NOTSET
     Debug = DEBUG
     Info = INFO
