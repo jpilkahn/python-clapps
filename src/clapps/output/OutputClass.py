@@ -32,7 +32,7 @@ class OutputClass(object):
 
     @isSilent.setter
     def isSilent(self, value):
-        def silentFilter():
+        def silentFilter(record):
             return 0
 
         if not isinstance(value, bool):
@@ -40,10 +40,11 @@ class OutputClass(object):
 
         self._isSilent = value
 
-        if value:
-            self._resultHandlerStdout.addFilter(silentFilter)
-        else:
-            self._resultHandlerStdout.removeFilter(silentFilter)
+        for handler in [*getLogger().handlers, self._resultHandlerStdout]:
+            if value:
+                handler.addFilter(silentFilter)
+            else:
+                handler.removeFilter(silentFilter)
 
     @property
     def outFile(self):
