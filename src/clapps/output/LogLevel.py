@@ -10,7 +10,10 @@ The Python standard library's [`logging`][logging] module's default
            "logging module documentation"
 """
 
-from enum import IntEnum
+from enum import (
+    Enum,
+    IntEnum,
+)
 from logging import (
     NOTSET,
     DEBUG,
@@ -21,7 +24,23 @@ from logging import (
 )
 
 
-class LogLevel(IntEnum):
+__all__ = ["LogLevel"]
+
+
+class EnumConstructibleFromName(Enum):
+    @classmethod
+    def _missing_(cls, value):
+        if type(value) is str:
+            value = value.lower()
+            for member in cls:
+                if member.name.lower() == value:
+                    return cls(member.value)
+                    break
+
+        super()._missing_(value)
+
+
+class LogLevel(EnumConstructibleFromName, IntEnum):
     NotSet = NOTSET
     Debug = DEBUG
     Info = INFO

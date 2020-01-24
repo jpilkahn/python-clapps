@@ -5,11 +5,12 @@ __title__ = 'clapps - Command Line App Skeleton'
 __version__ = '0.0.0'
 
 
-from clapps.output import OutputClass
+from clapps.Skeleton import Skeleton
 
 
-output = OutputClass()
+__all__ = ["Skeleton"]
 
 
 def main():
-    output.warning("OK")
+    app = Skeleton()
+    app.warning("OK")
