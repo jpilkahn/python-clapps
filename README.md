@@ -1,7 +1,7 @@
 clapps - Command Line App Skeleton [WIP]
 ========================================
 
-Template for small-ish Python 3 CLI apps.
+Hallo Luki!
 
 Python CLI scripts have been extremely useful to me in the past, both at home
 and for work. However, whether a one-off helper script or a periodically
